@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-condensed">
+            <tr>
+                <th class="center">SUN</th>
+                <th class="center">MON</th>
+                <th class="center">TUE</th>
+                <th class="center">WED</th>
+                <th class="center">THU</th>
+                <th class="center">FRI</th>
+                <th class="center">SAT</th>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:0:7"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:7:14"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:14:21"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:21:28"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:28:35"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <tr>
+                                                                      <!-- SEAN: Look at splice filter -->
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:35:42"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>
+            <!--<tr>
+                <td class="center habit-day ng-cloak" ng-repeat="day in calendar.days.month | limitTo:7:7" ng-click="day.css_class =='habit-day-inactive' || calendar.logHabitDay(day)"><span ng-class="day.css_class">{{day | date:'d'}}</span></td>
+            </tr>-->
+        </table>
+    </div>
+</div>

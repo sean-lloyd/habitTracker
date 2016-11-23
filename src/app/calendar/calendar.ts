@@ -1,5 +1,5 @@
 export class Calendar {
-    days: Date[];
+    days: Array<any>;
     period: { month: string, year: string };
     title: string;
 

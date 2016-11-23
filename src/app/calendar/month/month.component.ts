@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CalendarService } from '../calendar.service';
 import { Calendar } from '../calendar';
+import { HabitService } from '../../shared/habit.service';
 
 @Component({
   selector: 'ht-month',
@@ -10,18 +10,22 @@ import { Calendar } from '../calendar';
 export class MonthComponent implements OnInit, OnDestroy {
   public calendar: Calendar;
 
-  constructor(private calendarService: CalendarService) { }
+  constructor(private habitservice: HabitService) { }
+
+  onFlipCalendar(changeBy: number) {
+    this.habitservice.flipCalendar(changeBy, 'month');
+  }
 
   ngOnInit() {
-    this.calendarService.setCalendar();
-    this.calendarService.calendarMonthChanged.subscribe(
-      (calendar: Calendar) => { this.calendar = calendar; }
+    this.calendar = this.habitservice.getCalendarMonth('daily javascript');
+    this.habitservice.calendarMonthChanged.subscribe(
+      (calendar: Calendar) => this.calendar = calendar
     );
 
   }
 
   ngOnDestroy() {
-    this.calendarService.calendarMonthChanged.unsubscribe();
+    this.habitservice.calendarMonthChanged.unsubscribe();
   }
 
 }

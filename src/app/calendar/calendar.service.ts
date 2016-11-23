@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Calendar } from './calendar';
 
 @Injectable()
@@ -8,11 +8,44 @@ export class CalendarService {
   private listMonths: Array<string> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
     'September', 'October', 'November', 'December'];
 
-
-  calendarMonthChanged = new EventEmitter<Calendar>();
-  calendarWeekChanged = new EventEmitter<Calendar>();
-
   constructor() { }
+
+  // reacts to flipping the calendar forward/backward by a week or month
+  flipCalendar(changeBy: number, view: string) {
+    let newBaseDate: Date = this.getBaseDate(changeBy, view);
+    this.setCalendar(newBaseDate);
+  }
+
+  // gets the new base date for a flipped calendar
+  getBaseDate(changeBy: number, view: string) {
+    let baseDate: Date; // the new date the calendars should be based on
+
+    switch (view) {
+        case 'week':
+            baseDate = new Date(this.calendarWeek.days[0]);
+            baseDate.setDate(baseDate.getDate() + (changeBy * 7));
+            break;
+        case 'month':
+            baseDate = new Date(this.calendarMonth.days[15]);
+            baseDate.setMonth(baseDate.getMonth() + changeBy);
+            baseDate.setDate(15);
+            break;
+        default:
+            break;
+    }
+
+    return this.makeZeroHour(baseDate);
+  }
+
+  getCalendarMonth() {
+    this.setCalendar();
+    return this.calendarMonth;
+  }
+
+  getCalendarWeek() {
+    this.setCalendar();
+    return this.calendarWeek;
+  }
 
   /*
       1. Determine base date (today or other)
@@ -46,8 +79,6 @@ export class CalendarService {
 
     this.calendarWeek = calendarWeek;
     this.calendarMonth = calendarMonth;
-    this.calendarMonthChanged.emit(this.calendarMonth);
-    this.calendarWeekChanged.emit(this.calendarWeek);
   }
 
   // creates an array with the calendar dates
@@ -124,5 +155,7 @@ export class CalendarService {
 
     return result;
   }
+
+
 
 }

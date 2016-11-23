@@ -20,11 +20,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       (value: boolean) => this.show = value
     );
 
-    this.habitService.fetchHabits();
-
     this.habits = this.habitService.getHabits();
     this.habitService.habitChanged.subscribe(
-      // add typings to habits
       (habits: Habit[]) => this.habits = habits
     );
   }

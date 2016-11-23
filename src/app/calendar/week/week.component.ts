@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CalendarService } from '../calendar.service';
 import { Calendar } from '../calendar';
+import { HabitService } from '../../shared/habit.service';
 
 @Component({
   selector: 'ht-week',
@@ -10,17 +10,22 @@ import { Calendar } from '../calendar';
 export class WeekComponent implements OnInit, OnDestroy {
   public calendar: Calendar;
 
-  constructor(private calendarService: CalendarService) { }
+  constructor(private habitService: HabitService) { }
+
+  onFlipCalendar(changeBy: number) {
+    this.habitService.flipCalendar(changeBy, 'week');
+  }
 
   ngOnInit() {
-    this.calendarService.setCalendar();
-    this.calendarService.calendarWeekChanged.subscribe(
+    this.calendar = this.habitService.getCalendarWeek('daily javascript');
+    this.habitService.calendarWeekChanged.subscribe(
       (calendar: Calendar) => this.calendar = calendar
     );
+
   }
 
   ngOnDestroy() {
-    this.calendarService.calendarWeekChanged.unsubscribe();
+    this.habitService.calendarWeekChanged.unsubscribe();
   }
 
 }

@@ -1,0 +1,8 @@
+.month-header {
+  display: inline-block;
+}
+
+.change-month:hover {
+    cursor: pointer;
+    color: lightsteelblue;
+}

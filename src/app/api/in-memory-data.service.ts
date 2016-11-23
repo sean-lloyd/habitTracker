@@ -1,10 +1,8 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
-import { Habit } from '../shared/habit';
-import { HabitDetail } from '../shared/habit-detail';
 
 export class InMemoryDataService implements InMemoryDbService {
     createDb() {
-        let habits: Habit[] = [
+        let habits = [
             {
                 'name': 'daily javascript',
                 'description': 'practice makes perfect!',
@@ -27,7 +25,7 @@ export class InMemoryDataService implements InMemoryDbService {
             }
         ];
 
-        let details: HabitDetail[] = [
+        let details = [
             {
                 'name': 'no alcohol',
                 'date': '2016-09-05',

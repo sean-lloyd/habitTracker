@@ -1,3 +1,36 @@
-<p>
-  week works!
-</p>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 center">
+        <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(-1)">< </h1>
+        <h1 class="month-header">{{calendar.title}}</h1>
+        <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(1)"> ></h1>
+        </div>
+        <div class="col-sm-2">
+        <button type="button" class="btn btn-default pull-right bottom" aria-label="Toggle Calendar View Betweem Month and Week"
+            ng-click="calendar.toggleCalendarView()">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                </button>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-condensed">
+            <tr>
+                <th class="center">SUN</th>
+                <th class="center">MON</th>
+                <th class="center">TUE</th>
+                <th class="center">WED</th>
+                <th class="center">THU</th>
+                <th class="center">FRI</th>
+                <th class="center">SAT</th>
+            </tr>
+            <tr>
+                <td class="center habit-day" *ngFor="let day of calendar.days"><span>{{day.date | date:'d'}}</span></td>
+            </tr>
+        </table>
+    </div>
+</div>

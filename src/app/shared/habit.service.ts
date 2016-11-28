@@ -1,12 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
-
-import { Habit } from './habit';
-import { HabitDetail } from './habit-detail';
-import { CalendarService } from '../calendar/calendar.service';
-import { Calendar } from '../calendar/calendar';
 import 'rxjs/Rx'; // needed for .map() method to work on http.get();
 
+import { Calendar } from '../calendar/calendar';
+import { Habit } from './habit';
+import { HabitDetail } from './habit-detail';
+
+import { CalendarService } from '../calendar/calendar.service';
 
 @Injectable()
 export class HabitService {
@@ -20,6 +20,7 @@ export class HabitService {
   private habits: Habit[] = [];
   private habitsUrl: string = 'app/habits';
   private detailsUrl: string = 'app/details';
+  private selectedHabit: Habit;
 
   private extractData(res: Response) {
     let body = res.json();
@@ -28,26 +29,23 @@ export class HabitService {
 
   constructor(private http: Http, private calendarService: CalendarService) { }
 
-  private fetchDetails(habitName: string, calendarView: string) {
+  // fetch the habit ddetails from the server and combine that data with full calendar data
+  private fetchDetails(habitName: string) {
+
     return this.http.get(this.detailsUrl)
       .map(this.extractData)
       .subscribe((data: HabitDetail[]) => {
-        let calendar: Calendar;
-        let calendarDetail: any;
-        (calendarView === 'month') ? calendar = this.calendarMonth : calendar = this.calendarWeek;
-        calendarDetail = this.mergeHabitsWithCalendar(data, calendar, habitName);
+        this.calendarMonthDetail = this.mergeHabitsWithCalendar(data, this.calendarMonth, habitName);
+        this.calendarMonthChanged.emit(this.calendarMonthDetail);
 
-        if (calendarView === 'month') {
-          this.calendarMonthDetail = calendarDetail;
-          this.calendarMonthChanged.emit(this.calendarMonthDetail);
-        } else {
-          this.calendarWeekDetail = calendarDetail;
-          this.calendarWeekChanged.emit(this.calendarWeekDetail);
-        }
+        this.calendarWeekDetail = this.mergeHabitsWithCalendar(data, this.calendarWeek, habitName);
+        this.calendarWeekChanged.emit(this.calendarWeekDetail);
+
       }, error => console.log(error)
       );
   }
 
+  // fetch habit data from database
   private fetchHabits() {
     return this.http.get(this.habitsUrl)
       .map(this.extractData)
@@ -61,8 +59,17 @@ export class HabitService {
   }
 
   // reacts to flipping the calendar forward/backward by a week or month
-  flipCalendar(changeBy: number, view: string) {
-    this.calendarService.flipCalendar(changeBy, view);
+  flipCalendar(habit: Habit, changeBy: number, view: string) {
+    if (view === 'month') {
+      this.calendarService.flipCalendarMonth(changeBy, view);
+    } else if (view === 'week') {
+      this.calendarService.flipCalendarWeek(changeBy, view);
+    }
+
+    this.calendarMonth = this.calendarService.getCalendarMonth();
+    this.calendarWeek = this.calendarService.getCalendarWeek();
+
+    this.fetchDetails(habit.name);
   }
 
   getHabits() {
@@ -70,19 +77,31 @@ export class HabitService {
     return this.habits;
   }
 
-  getCalendarMonth(habitName: string) {
+  getCalendars(habit: Habit) {
     this.calendarMonth = this.calendarService.getCalendarMonth();
-    this.fetchDetails(habitName, 'month');
-    return this.calendarMonth;
-  }
-
-  getCalendarWeek(habitName: string) {
     this.calendarWeek = this.calendarService.getCalendarWeek();
-    this.fetchDetails(habitName, 'week');
-    return this.calendarWeek;
+    this.fetchDetails(habit.name);
   }
 
-  private mergeHabitsWithCalendar(habits: HabitDetail[], calendar: Calendar, habitName: string) {
+  getSelectedHabit(): Habit {
+    // !TODO REMOVE later when default selected habit is sorted out
+    if (!this.selectedHabit) {
+      this.selectedHabit = {
+        'name': 'daily javascript',
+        'description': 'practice makes perfect!',
+        'date_added': '2016-09-02'
+      };
+    }
+    //
+
+    return this.selectedHabit;
+  }
+
+  setSelectedHabit(habit) {
+    this.selectedHabit = habit;
+  }
+
+  private mergeHabitsWithCalendar(habits: HabitDetail[], calendar: Calendar, habitName: string): Calendar {
     let currentMonth: string = calendar.period.year + calendar.period.month;
 
     calendar.days = calendar.days.map(mergeData);
@@ -95,11 +114,15 @@ export class HabitService {
       let evalMonth = dt.getFullYear() + '' + dt.getMonth();
       let status = '';
 
+
       if (evalMonth !== currentMonth) {
         css_class = 'habit-day-inactive';
       } else {
 
         for (let habit of habits) {
+          habit.date = new Date(habit.date);
+          habit.date = makeZeroHour(habit.date);
+
           if (habit.name === habitName && dt.getTime() === habit.date.getTime()) {
             status = habit.status;
 
@@ -124,6 +147,17 @@ export class HabitService {
         css_class: css_class
       };
     }
+
+    // zeroes out time in date to make it easier to matches dates later. The times does not matter in this app.
+    function makeZeroHour(date: Date): Date {
+      let year = date.getFullYear();
+      let month = date.getMonth();
+      let day = date.getDate();
+
+      return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+    }
+
   }
+
 
 }

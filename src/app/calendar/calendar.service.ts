@@ -11,7 +11,12 @@ export class CalendarService {
   constructor() { }
 
   // reacts to flipping the calendar forward/backward by a week or month
-  flipCalendar(changeBy: number, view: string) {
+  flipCalendarMonth(changeBy: number, view: string) {
+    let newBaseDate: Date = this.getBaseDate(changeBy, view);
+    this.setCalendar(newBaseDate);
+  }
+
+  flipCalendarWeek(changeBy: number, view: string) {
     let newBaseDate: Date = this.getBaseDate(changeBy, view);
     this.setCalendar(newBaseDate);
   }
@@ -21,29 +26,29 @@ export class CalendarService {
     let baseDate: Date; // the new date the calendars should be based on
 
     switch (view) {
-        case 'week':
-            baseDate = new Date(this.calendarWeek.days[0]);
-            baseDate.setDate(baseDate.getDate() + (changeBy * 7));
-            break;
-        case 'month':
-            baseDate = new Date(this.calendarMonth.days[15]);
-            baseDate.setMonth(baseDate.getMonth() + changeBy);
-            baseDate.setDate(15);
-            break;
-        default:
-            break;
+      case 'week':
+        baseDate = new Date(this.calendarWeek.days[0].date);
+        baseDate.setDate(baseDate.getDate() + (changeBy * 7));
+        break;
+      case 'month':
+        baseDate = new Date(this.calendarMonth.days[15].date);
+        baseDate.setMonth(baseDate.getMonth() + changeBy);
+        baseDate.setDate(15);
+        break;
+      default:
+        break;
     }
 
     return this.makeZeroHour(baseDate);
   }
 
   getCalendarMonth() {
-    this.setCalendar();
+    if (!this.calendarMonth) { this.setCalendar(); }
     return this.calendarMonth;
   }
 
   getCalendarWeek() {
-    this.setCalendar();
+    if (!this.calendarWeek) { this.setCalendar(); }
     return this.calendarWeek;
   }
 

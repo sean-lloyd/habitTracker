@@ -6,3 +6,39 @@
     cursor: pointer;
     color: lightsteelblue;
 }
+
+.habit-day span:hover:not(.habit-day-inactive) {
+    cursor: pointer;
+    /*background-color: lightsteelblue;*/
+    /*transition: all 0.1s ease-in-out;*/
+    /*-webkit-transition: all 0.1s ease-in-out;*/
+}
+
+.habit-day span {
+    display: inline-block;
+    margin: auto;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    padding-top: 2px;
+}
+
+.failure {
+    border: 1px solid pink;
+    background-color: pink;
+}
+
+.success {
+    border: 1px solid lightgreen;
+    background-color: lightgreen;
+}
+
+.habit-day2 {
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    padding-top: 2px;
+    background-color: red;
+}

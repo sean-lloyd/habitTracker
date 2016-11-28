@@ -10,11 +10,29 @@ import { Habit } from '../shared/habit';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   show: boolean = false;
+  selectedHabit: Habit;
   habits: Habit[] = [];
+
+  // !TODO REMOVE later when default state is worked out
+  defaultHabit: Habit = {
+    'name': 'daily javascript',
+    'description': 'practice makes perfect!',
+    'date_added': '2016-09-02'
+  };
+  //
 
   constructor(private menuService: MenuService, private habitService: HabitService) { }
 
+  onClick(habit: Habit) {
+    this.selectedHabit = habit;
+    this.habitService.setSelectedHabit(habit);
+    this.habitService.getCalendars(habit);
+  }
+
   ngOnInit() {
+    // !TODO REMOVE later when default state is worked out
+    if (!this.selectedHabit) { this.selectedHabit = this.defaultHabit; }
+    //
     this.show = this.menuService.showSideMenu;
     this.menuService.showSideMenuChanged.subscribe(
       (value: boolean) => this.show = value

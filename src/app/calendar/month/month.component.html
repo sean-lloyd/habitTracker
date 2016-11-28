@@ -12,6 +12,7 @@
                 </button>
         </div>
     </div>
+    <h4>{{selectedHabit.name}}</h4>
 </div>
 <br>
 
@@ -28,26 +29,23 @@
                 <th class="center">SAT</th>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:0:7"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:0:7" ><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:7:14"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:7:14"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:14:21"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:14:21"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:21:28"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:21:28"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:28:35"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:28:35"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days | slice:35:42"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days | slice:35:42"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
-            <!--<tr>
-                <td class="center habit-day ng-cloak" ng-repeat="day in calendar.days.month | limitTo:7:7" ng-click="day.css_class =='habit-day-inactive' || calendar.logHabitDay(day)"><span ng-class="day.css_class">{{day.date | date:'d'}}</span></td>
-            </tr>-->
         </table>
     </div>
 </div>

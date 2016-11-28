@@ -13,6 +13,7 @@
                 </button>
         </div>
     </div>
+    <h4>{{selectedHabit.name}}</h4>
 </div>
 <br>
 
@@ -29,7 +30,7 @@
                 <th class="center">SAT</th>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar.days"><span>{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of calendar.days"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
         </table>
     </div>

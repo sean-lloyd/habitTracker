@@ -18,6 +18,7 @@ export class HabitService {
   private calendarMonthDetail: any;
   private calendarWeekDetail: any;
   private habits: Habit[] = [];
+  private habitDetailsCache: HabitDetail[];
   private habitsUrl: string = 'app/habits';
   private detailsUrl: string = 'app/details';
   private selectedHabit: Habit;
@@ -32,17 +33,27 @@ export class HabitService {
   // fetch the habit ddetails from the server and combine that data with full calendar data
   private fetchDetails(habitName: string) {
 
-    return this.http.get(this.detailsUrl)
-      .map(this.extractData)
-      .subscribe((data: HabitDetail[]) => {
-        this.calendarMonthDetail = this.mergeHabitsWithCalendar(data, this.calendarMonth, habitName);
-        this.calendarMonthChanged.emit(this.calendarMonthDetail);
+    if (this.habitDetailsCache) {
+      this.calendarMonthDetail = this.mergeHabitsWithCalendar(this.habitDetailsCache, this.calendarMonth, habitName);
+      this.calendarMonthChanged.emit(this.calendarMonthDetail);
 
-        this.calendarWeekDetail = this.mergeHabitsWithCalendar(data, this.calendarWeek, habitName);
-        this.calendarWeekChanged.emit(this.calendarWeekDetail);
+      this.calendarWeekDetail = this.mergeHabitsWithCalendar(this.habitDetailsCache, this.calendarWeek, habitName);
+      this.calendarWeekChanged.emit(this.calendarWeekDetail);
 
-      }, error => console.log(error)
-      );
+    } else {
+      this.http.get(this.detailsUrl)
+        .map(this.extractData)
+        .subscribe((data: HabitDetail[]) => {
+          this.habitDetailsCache = data;
+          this.calendarMonthDetail = this.mergeHabitsWithCalendar(data, this.calendarMonth, habitName);
+          this.calendarMonthChanged.emit(this.calendarMonthDetail);
+
+          this.calendarWeekDetail = this.mergeHabitsWithCalendar(data, this.calendarWeek, habitName);
+          this.calendarWeekChanged.emit(this.calendarWeekDetail);
+
+        }, error => console.log(error)
+        );
+    }
   }
 
   // fetch list of habits from database

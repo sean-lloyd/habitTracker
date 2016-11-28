@@ -58,7 +58,7 @@ export class CalendarService {
       3. get the calendar days (either 1 week or 1 month) (using start date, num weeks)
 
   */
-  setCalendar(date?: Date) {
+  private setCalendar(date?: Date) {
     let baseDate: Date = date || new Date();
     let startDate = {
       week: new Date(),

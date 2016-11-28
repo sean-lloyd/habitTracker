@@ -45,7 +45,7 @@ export class HabitService {
       );
   }
 
-  // fetch habit data from database
+  // fetch list of habits from database
   private fetchHabits() {
     return this.http.get(this.habitsUrl)
       .map(this.extractData)
@@ -99,6 +99,7 @@ export class HabitService {
 
   setSelectedHabit(habit) {
     this.selectedHabit = habit;
+    this.getCalendars(habit);
   }
 
   private mergeHabitsWithCalendar(habits: HabitDetail[], calendar: Calendar, habitName: string): Calendar {
@@ -108,12 +109,11 @@ export class HabitService {
 
     return calendar;
 
-    function mergeData(dt: Date): HabitDetail {
+    function mergeData(dt): HabitDetail {
       let css_class = 'habit-day';
-      dt = new Date(dt);
+      dt.hasOwnProperty('date') ? dt = new Date(dt.date) : dt = new Date(dt);
       let evalMonth = dt.getFullYear() + '' + dt.getMonth();
       let status = '';
-
 
       if (evalMonth !== currentMonth) {
         css_class = 'habit-day-inactive';

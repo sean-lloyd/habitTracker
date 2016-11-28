@@ -26,7 +26,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   onClick(habit: Habit) {
     this.selectedHabit = habit;
     this.habitService.setSelectedHabit(habit);
-    this.habitService.getCalendars(habit);
   }
 
   ngOnInit() {

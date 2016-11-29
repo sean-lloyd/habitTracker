@@ -1,4 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Rx';
 
 import { MenuService } from '../shared/menu.service';
 import { HabitService } from '../shared/habit.service';
@@ -10,43 +12,64 @@ import { Habit } from '../shared/habit';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  private routeSubscription: Subscription;
+  private menuServiceSubscription: Subscription;
+  private habitChangedSubscription: Subscription;
+  private currentViewChangedSubscription: Subscription;
   show: boolean = false;
+  id: string;
   selectedHabit: Habit;
   habits: Habit[] = [];
+  currentView: string;
 
-  // !TODO REMOVE later when default state is worked out
-  defaultHabit: Habit = {
-    'name': 'daily javascript',
-    'description': 'practice makes perfect!',
-    'date_added': '2016-09-02'
-  };
-  //
+  constructor(
+    private menuService: MenuService,
+    private habitService: HabitService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
 
-  constructor(private menuService: MenuService, private habitService: HabitService) { }
-
-  onClick(habit: Habit) {
-    this.selectedHabit = habit;
-    this.habitService.setSelectedHabit(habit);
+    this.routeSubscription = activatedRoute.params.subscribe(
+      (param: any) => {
+        this.id = param['id'];
+        this.selectedHabit = this.habitService.selectedHabit;
+      }
+    );
   }
 
   ngOnInit() {
-    // !TODO REMOVE later when default state is worked out
-    if (!this.selectedHabit) { this.selectedHabit = this.defaultHabit; }
-    //
+    this.currentView = this.habitService.currentView;
     this.show = this.menuService.showSideMenu;
-    this.menuService.showSideMenuChanged.subscribe(
-      (value: boolean) => this.show = value
+    this.habits = this.habitService.getHabits();
+
+    this.currentViewChangedSubscription = this.habitService.currentViewChanged.subscribe(
+      (view: any) => {
+        this.currentView = view;
+      }
     );
 
-    this.habits = this.habitService.getHabits();
-    this.habitService.habitChanged.subscribe(
-      (habits: Habit[]) => this.habits = habits
+    this.habitChangedSubscription = this.habitService.habitChanged.subscribe(
+      (habits: Habit[]) => {
+        this.habits = habits;
+        this.selectedHabit = this.habitService.selectedHabit;
+      }
+    );
+
+    this.menuServiceSubscription = this.menuService.showSideMenuChanged.subscribe(
+      (value: boolean) => {
+        this.show = value;
+        this.currentView = this.habitService.currentView;
+      }
     );
   }
 
+  onClick(habit: Habit) {
+    this.selectedHabit = habit;
+  }
+
   ngOnDestroy() {
-    this.menuService.showSideMenuChanged.unsubscribe();
-    this.habitService.habitChanged.unsubscribe()
+    if (this.menuServiceSubscription) { this.menuServiceSubscription.unsubscribe(); }
+    if (this.habitChangedSubscription) { this.habitChangedSubscription.unsubscribe(); }
+    if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
   }
 
 }

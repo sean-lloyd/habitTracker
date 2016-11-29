@@ -13,15 +13,17 @@ export class HabitService {
   habitChanged = new EventEmitter<Habit[]>();
   calendarWeekChanged = new EventEmitter<HabitDetail[]>();
   calendarMonthChanged = new EventEmitter<HabitDetail[]>();
+  currentView: string = 'month';
+  currentViewChanged = new EventEmitter<string>();
+  selectedHabit: Habit;
   private calendarMonth: Calendar;
   private calendarWeek: Calendar;
-  private calendarMonthDetail: any;
-  private calendarWeekDetail: any;
-  private habits: Habit[] = [];
+  calendarMonthDetail: any;
+  calendarWeekDetail: any;
+  private habits: Habit[];
   private habitDetailsCache: HabitDetail[];
   private habitsUrl: string = 'app/habits';
   private detailsUrl: string = 'app/details';
-  private selectedHabit: Habit;
 
   private extractData(res: Response) {
     let body = res.json();
@@ -69,8 +71,13 @@ export class HabitService {
       );
   }
 
+  changeCurrentView(view: string) {
+    this.currentView = view;
+    this.currentViewChanged.emit(this.currentView);
+  }
+
   // reacts to flipping the calendar forward/backward by a week or month
-  flipCalendar(habit: Habit, changeBy: number, view: string) {
+  flipCalendar(habitName: string, changeBy: number, view: string) {
     if (view === 'month') {
       this.calendarService.flipCalendarMonth(changeBy, view);
     } else if (view === 'week') {
@@ -80,37 +87,27 @@ export class HabitService {
     this.calendarMonth = this.calendarService.getCalendarMonth();
     this.calendarWeek = this.calendarService.getCalendarWeek();
 
-    this.fetchDetails(habit.name);
+    this.fetchDetails(habitName);
   }
 
   getHabits() {
-    this.fetchHabits();
+    if (!this.habits) {
+      this.fetchHabits();
+    }
     return this.habits;
   }
 
-  getCalendars(habit: Habit) {
+  getHabitByID(id: string): Habit {
+    if (this.habits) {
+      this.selectedHabit = this.habits[id];
+      return this.selectedHabit;
+    }
+  }
+
+  getCalendars(habitName: string) {
     this.calendarMonth = this.calendarService.getCalendarMonth();
     this.calendarWeek = this.calendarService.getCalendarWeek();
-    this.fetchDetails(habit.name);
-  }
-
-  getSelectedHabit(): Habit {
-    // !TODO REMOVE later when default selected habit is sorted out
-    if (!this.selectedHabit) {
-      this.selectedHabit = {
-        'name': 'daily javascript',
-        'description': 'practice makes perfect!',
-        'date_added': '2016-09-02'
-      };
-    }
-    //
-
-    return this.selectedHabit;
-  }
-
-  setSelectedHabit(habit) {
-    this.selectedHabit = habit;
-    this.getCalendars(habit);
+    this.fetchDetails(habitName);
   }
 
   private mergeHabitsWithCalendar(habits: HabitDetail[], calendar: Calendar, habitName: string): Calendar {

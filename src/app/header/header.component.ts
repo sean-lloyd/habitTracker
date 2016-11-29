@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes, group } from '@angular/core';
+import { trigger, state, style } from '@angular/core';
 import { MenuService } from '../shared/menu.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onClickSideMenu() {
-    this.menuIconState === 'closed' ? this.menuIconState = 'open' : this.menuIconState = 'closed';;
+    this.menuIconState === 'closed' ? this.menuIconState = 'open' : this.menuIconState = 'closed';
     this.menuService.toggleSideMenu();
   }
 

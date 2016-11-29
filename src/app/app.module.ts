@@ -20,7 +20,8 @@ import { MenuService } from './shared/menu.service';
 import { HabitService } from './shared/habit.service';
 import { CalendarService } from './calendar/calendar.service';
 
-// import { routing } from './app.routing';
+import { routing } from './app.routing';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -30,13 +31,14 @@ import { CalendarService } from './calendar/calendar.service';
     WeekComponent,
     HeaderComponent,
     SidebarComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     InMemoryWebApiModule.forRoot(InMemoryDataService), // to trick the HTTP client into fetching and saving data from a mock service
-    // routing
+    routing
   ],
   providers: [MenuService, HabitService, CalendarService],
   bootstrap: [AppComponent]

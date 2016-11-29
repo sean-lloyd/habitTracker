@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import { MenuService } from '../shared/menu.service';
 import { HabitService } from '../shared/habit.service';
 import { Habit } from '../shared/habit';
@@ -45,6 +46,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.menuService.showSideMenuChanged.unsubscribe();
+    this.habitService.habitChanged.unsubscribe()
   }
 
 }

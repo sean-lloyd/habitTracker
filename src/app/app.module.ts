@@ -22,6 +22,7 @@ import { CalendarService } from './calendar/calendar.service';
 
 import { routing } from './app.routing';
 import { HomeComponent } from './home/home.component';
+import { AllWeekComponent } from './calendar/all-week/all-week.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { HomeComponent } from './home/home.component';
     HeaderComponent,
     SidebarComponent,
     HomeComponent,
+    AllWeekComponent,
   ],
   imports: [
     BrowserModule,

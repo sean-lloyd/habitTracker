@@ -39,7 +39,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentView = this.habitService.currentView;
     this.show = this.menuService.showSideMenu;
-    this.habits = this.habitService.getHabits();
+    this.habits = this.habitService.getHabitData();
 
     this.currentViewChangedSubscription = this.habitService.currentViewChanged.subscribe(
       (view: any) => {
@@ -47,7 +47,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.habitChangedSubscription = this.habitService.habitChanged.subscribe(
+    this.habitChangedSubscription = this.habitService.habitsChanged.subscribe(
       (habits: Habit[]) => {
         this.habits = habits;
         this.selectedHabit = this.habitService.selectedHabit;

@@ -12,12 +12,11 @@ import { HabitService } from '../../shared/habit.service';
   styleUrls: ['./month.component.css']
 })
 export class MonthComponent implements OnInit, OnDestroy {
-  public calendar: Calendar;
+  calendar: Calendar;
   private routeSubscription: Subscription;
   private habitChangeSubscription: Subscription;
-  private calendarChangedSubscription: Subscription;
   private id: string;
-  selectedHabit: Habit;
+  habit: Habit;
 
   constructor(private habitService: HabitService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.routeSubscription = activatedRoute.params.subscribe(
@@ -29,36 +28,27 @@ export class MonthComponent implements OnInit, OnDestroy {
     );
   }
 
-  private refreshCalendar() {
-    this.habitService.getHabits();
-    this.selectedHabit = this.habitService.getHabitByID(this.id);
-    if (this.selectedHabit) {
-      this.habitService.getCalendars(this.selectedHabit.name);
-    }
-  }
-
-  onFlipCalendar(changeBy: number) {
-    this.habitService.flipCalendar(this.selectedHabit.name, changeBy, 'month');
-  }
-
   ngOnInit() {
-    this.selectedHabit = this.habitService.selectedHabit;
-    this.calendar = this.habitService.calendarMonthDetail;
+    this.habit = this.habitService.selectedHabit;
+    // this.calendar = this.habitService.calendarMonthDetail;
 
-    this.habitChangeSubscription = this.habitService.habitChanged.subscribe(
+    this.habitChangeSubscription = this.habitService.habitsChanged.subscribe(
       () => this.refreshCalendar()
     );
 
-    this.calendarChangedSubscription = this.habitService.calendarMonthChanged.subscribe(
-      (calendar: Calendar) => {
-        this.calendar = calendar;
-      }
-    );
+  }
+
+  private refreshCalendar() {
+    this.habitService.getHabitData();
+    this.habit = this.habitService.getHabitByID(this.id);
+  }
+
+  onFlipCalendar(changeBy: number) {
+    this.habitService.flipCalendar(changeBy, 'month');
   }
 
   ngOnDestroy() {
     if (this.habitChangeSubscription) { this.habitChangeSubscription.unsubscribe(); }
-    if (this.calendarChangedSubscription) { this.calendarChangedSubscription.unsubscribe(); }
     if (this.routeSubscription) { this.routeSubscription.unsubscribe(); }
   }
 

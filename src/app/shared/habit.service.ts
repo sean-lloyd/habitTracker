@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { Subscription } from 'rxjs/Rx';
 import 'rxjs/Rx'; // needed for .map() method to work on http.get();
 
 import { Calendar } from '../calendar/calendar';
@@ -10,20 +11,21 @@ import { CalendarService } from '../calendar/calendar.service';
 
 @Injectable()
 export class HabitService {
-  habitChanged = new EventEmitter<Habit[]>();
-  calendarWeekChanged = new EventEmitter<HabitDetail[]>();
-  calendarMonthChanged = new EventEmitter<HabitDetail[]>();
-  currentView: string = 'month';
-  currentViewChanged = new EventEmitter<string>();
-  selectedHabit: Habit;
   private calendarMonth: Calendar;
   private calendarWeek: Calendar;
-  calendarMonthDetail: any;
-  calendarWeekDetail: any;
-  private habits: Habit[];
-  private habitDetailsCache: HabitDetail[];
-  private habitsUrl: string = 'app/habits';
+  currentView: string = 'month';
+  currentViewChanged = new EventEmitter<string>();
   private detailsUrl: string = 'app/details';
+  private fetchHabitSubscription: Subscription;
+  private fetchDetailsSubscription: Subscription;
+  habits: Habit[]; // the main habits array (habits, details, calendar)
+  habitsChanged = new EventEmitter<Habit[]>(); // notifies the main habits array updated
+  private habitList: Habit[]; // from database
+  private habitListChanged = new EventEmitter<Habit[]>(); // when list of habits changes
+  private habitDetails: HabitDetail[]; // from database
+  private habitDetailsChanged = new EventEmitter<any>(); // when habit details changes
+  private habitsUrl: string = 'app/habits';
+  selectedHabit: Habit;
 
   private extractData(res: Response) {
     let body = res.json();
@@ -32,30 +34,73 @@ export class HabitService {
 
   constructor(private http: Http, private calendarService: CalendarService) { }
 
-  // fetch the habit ddetails from the server and combine that data with full calendar data
-  private fetchDetails(habitName: string) {
+  // Builds a master compilation of habits, details, and calendars.
+  // Can query later without making database calls every time.
+  private buildHabitsCalendars() {
+    this.habits = [];
+    // get calendar data
+    this.calendarMonth = this.calendarService.getCalendarMonth();
+    this.calendarWeek = this.calendarService.getCalendarWeek();
 
-    if (this.habitDetailsCache) {
-      this.calendarMonthDetail = this.mergeHabitsWithCalendar(this.habitDetailsCache, this.calendarMonth, habitName);
-      this.calendarMonthChanged.emit(this.calendarMonthDetail);
+    // merge Habit and HabitDetail and Calendar and push to habits array
+    this.habitList.forEach(
+      (habit) => {
+        let month: Calendar = this.mergeHabitDetailsWithCalendar(this.calendarMonth, habit.name);
+        let week: Calendar = this.mergeHabitDetailsWithCalendar(this.calendarWeek, habit.name);
 
-      this.calendarWeekDetail = this.mergeHabitsWithCalendar(this.habitDetailsCache, this.calendarWeek, habitName);
-      this.calendarWeekChanged.emit(this.calendarWeekDetail);
+        // need to copy the Object to avoide closure scope issues
+        habit.month = this.copyObject(month);
+        habit.week = this.copyObject(week);
 
-    } else {
-      this.http.get(this.detailsUrl)
-        .map(this.extractData)
-        .subscribe((data: HabitDetail[]) => {
-          this.habitDetailsCache = data;
-          this.calendarMonthDetail = this.mergeHabitsWithCalendar(data, this.calendarMonth, habitName);
-          this.calendarMonthChanged.emit(this.calendarMonthDetail);
+        this.habits.push(habit);
+      }
+    );
 
-          this.calendarWeekDetail = this.mergeHabitsWithCalendar(data, this.calendarWeek, habitName);
-          this.calendarWeekChanged.emit(this.calendarWeekDetail);
+    this.habitsChanged.emit(this.habits);
 
-        }, error => console.log(error)
-        );
-    }
+  }
+
+  changeCurrentView(view: string) {
+    this.currentView = view;
+    this.currentViewChanged.emit(this.currentView);
+  }
+
+  private copyObject(obj: any) {
+    /** JSON methods are solution to closure issue
+     * The issue pushes the same referene into the properties,
+     * causing all of these properties to reflect the last item iterated.
+     * The JSON methods make deep copies, breaking the reference
+     */
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  // fetch all data and emit notifications when data arrives and kickoff buildHabitsCalendars()
+  private fetchData(habitName?: string) {
+    // establish observable subscriptions of EventEmitters before initiating the fetching
+    // first fecth Habits, then fetch Details
+    // unsubscribe to avoid memory leaks
+    this.fetchHabitSubscription = this.habitListChanged.subscribe(
+      () => this.fetchDetails()
+    );
+    this.fetchDetailsSubscription = this.habitDetailsChanged.subscribe(
+      () => {
+        this.buildHabitsCalendars();
+        this.unSubscribe();
+      }
+    );
+
+    this.fetchHabits();
+  }
+
+  // fetch the habit details from the server
+  private fetchDetails() {
+    this.http.get(this.detailsUrl)
+      .map(this.extractData)
+      .subscribe((data: HabitDetail[]) => {
+        this.habitDetails = data;
+        this.habitDetailsChanged.emit(this.habitDetails);
+      }, error => console.log(error)
+      );
   }
 
   // fetch list of habits from database
@@ -64,35 +109,27 @@ export class HabitService {
       .map(this.extractData)
       .subscribe(
       (data: Habit[]) => {
-        this.habits = data;
-        this.habitChanged.emit(this.habits);
+        this.habitList = data;
+        this.habitListChanged.emit(this.habits);
       },
       error => console.log(error)
       );
   }
 
-  changeCurrentView(view: string) {
-    this.currentView = view;
-    this.currentViewChanged.emit(this.currentView);
-  }
-
   // reacts to flipping the calendar forward/backward by a week or month
-  flipCalendar(habitName: string, changeBy: number, view: string) {
+  flipCalendar(changeBy: number, view: string) {
     if (view === 'month') {
       this.calendarService.flipCalendarMonth(changeBy, view);
     } else if (view === 'week') {
       this.calendarService.flipCalendarWeek(changeBy, view);
     }
 
-    this.calendarMonth = this.calendarService.getCalendarMonth();
-    this.calendarWeek = this.calendarService.getCalendarWeek();
-
-    this.fetchDetails(habitName);
+    this.buildHabitsCalendars();
   }
 
-  getHabits() {
+  getHabitData() {
     if (!this.habits) {
-      this.fetchHabits();
+      this.fetchData();
     }
     return this.habits;
   }
@@ -100,18 +137,25 @@ export class HabitService {
   getHabitByID(id: string): Habit {
     if (this.habits) {
       this.selectedHabit = this.habits[id];
-      return this.selectedHabit;
+    } else {
+      this.fetchData();
     }
+    return this.selectedHabit;
   }
 
-  getCalendars(habitName: string) {
-    this.calendarMonth = this.calendarService.getCalendarMonth();
-    this.calendarWeek = this.calendarService.getCalendarWeek();
-    this.fetchDetails(habitName);
-  }
-
-  private mergeHabitsWithCalendar(habits: HabitDetail[], calendar: Calendar, habitName: string): Calendar {
+  private mergeHabitDetailsWithCalendar(calendar: Calendar, habitName: string): Calendar {
+    let habits = this.copyObject(this.habitDetails);
     let currentMonth: string = calendar.period.year + calendar.period.month;
+
+    // fix date formate from mySQL database to match calendar format
+    habits.map(
+      (habit) => {
+        habit.date = new Date(habit.date);
+        habit.date.setDate(habit.date.getDate() + 1);
+        habit.date = makeZeroHour(habit.date);
+        return habit;
+      }
+    );
 
     calendar.days = calendar.days.map(mergeData);
 
@@ -128,8 +172,6 @@ export class HabitService {
       } else {
 
         for (let habit of habits) {
-          habit.date = new Date(habit.date);
-          habit.date = makeZeroHour(habit.date);
 
           if (habit.name === habitName && dt.getTime() === habit.date.getTime()) {
             status = habit.status;
@@ -167,5 +209,9 @@ export class HabitService {
 
   }
 
+  private unSubscribe() {
+    if (this.fetchHabitSubscription) { this.fetchHabitSubscription.unsubscribe(); }
+    if (this.fetchDetailsSubscription) { this.fetchDetailsSubscription.unsubscribe(); }
+  }
 
 }

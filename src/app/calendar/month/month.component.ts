@@ -30,7 +30,6 @@ export class MonthComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.habit = this.habitService.selectedHabit;
-    // this.calendar = this.habitService.calendarMonthDetail;
 
     this.habitChangeSubscription = this.habitService.habitsChanged.subscribe(
       () => this.refreshCalendar()

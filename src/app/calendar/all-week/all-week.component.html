@@ -2,23 +2,18 @@
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-8 center">
-        <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(-1)">< </h1>
-        <h1 class="month-header">{{calendar?.title}}</h1>
-        <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(1)"> ></h1>
+            <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(-1)">< </h1>
+            <h1 class="month-header">{{calendarTitle}}</h1>
+            <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(1)"> ></h1>
         </div>
-        <div class="col-sm-2">
-        <button type="button" class="btn btn-default pull-right bottom" [routerLink]="['/' + id + '/month']" aria-label="Toggle Calendar View Betweem Month and Week"
-            ng-click="calendar.toggleCalendarView()">
-                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                </button>
-        </div>
+        <div class="col-sm-2"></div>
     </div>
-    <h4 style="text-align: center">All Habits</h4>
 </div>
 <br>
 
 <div class="container">
-    <div class="table-responsive">
+    <div class="table-responsive" *ngFor="let habit of habits">
+        <h4>{{habit?.name}}</h4>
         <table class="table table-condensed">
             <tr>
                 <th class="center">SUN</th>
@@ -30,7 +25,7 @@
                 <th class="center">SAT</th>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of calendar?.days"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of habit?.week.days"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
             </tr>
         </table>
     </div>

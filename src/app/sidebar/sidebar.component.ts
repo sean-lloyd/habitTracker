@@ -16,11 +16,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private menuServiceSubscription: Subscription;
   private habitChangedSubscription: Subscription;
   private currentViewChangedSubscription: Subscription;
-  show: boolean = false;
-  id: string;
-  selectedHabit: Habit;
-  habits: Habit[] = [];
+  allWeekView: boolean = true;
   currentView: string;
+  id: string;
+  habits: Habit[] = [];
+  selectedHabit: Habit;
+  show: boolean = false;
 
   constructor(
     private menuService: MenuService,
@@ -34,6 +35,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.selectedHabit = this.habitService.selectedHabit;
       }
     );
+
   }
 
   ngOnInit() {
@@ -64,6 +66,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   onClick(habit: Habit) {
     this.selectedHabit = habit;
+    this.allWeekView = false;
+  }
+
+  onClickAll() {
+    this.selectedHabit = null;
+    this.allWeekView = true;
   }
 
   ngOnDestroy() {

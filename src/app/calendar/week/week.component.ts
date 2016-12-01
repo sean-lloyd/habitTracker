@@ -26,11 +26,11 @@ export class WeekComponent implements OnInit, OnDestroy {
         this.habitService.changeCurrentView('week');
       }
     );
+
   }
 
   ngOnInit() {
     this.habit = this.habitService.selectedHabit;
-    // this.calendar = this.habitService.calendarWeekDetail;
 
     this.habitChangeSubscription = this.habitService.habitsChanged.subscribe(
       () => this.refreshCalendar()

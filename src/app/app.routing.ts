@@ -7,11 +7,12 @@ import { WeekComponent } from './calendar/week/week.component';
 import { AllWeekComponent } from './calendar/all-week/all-week.component';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, pathMatch: 'full' },
+    { path: '', redirectTo: 'all/week', pathMatch: 'full' },
     { path: 'all/week', component: AllWeekComponent, pathMatch: 'full'},
     { path: ':id', component: CalendarComponent, pathMatch: 'full'},
     { path: ':id/month', component: MonthComponent },
-    { path: ':id/week', component: WeekComponent }
+    { path: ':id/week', component: WeekComponent },
+    { path: '**', component: HomeComponent }
     // { path: ':id/add', component: MonthComponent },
     // { path: ':id/edit', component: MonthComponent },
     // { path: ':id/details', component: MonthComponent },

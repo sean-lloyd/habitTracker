@@ -66,9 +66,9 @@ export class HabitService {
   }
 
   private copyObject(obj: any) {
-    /** JSON methods are solution to closure issue
-     * The issue pushes the same referene into the properties,
-     * causing all of these properties to reflect the last item iterated.
+    /** JSON methods are solution to reference issue
+     * JavaScript makes reference when setting a varibale equal to an array
+     * causing the final update to supplant the previous updates
      * The JSON methods make deep copies, breaking the reference
      */
     return JSON.parse(JSON.stringify(obj));

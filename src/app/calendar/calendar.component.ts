@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HabitService } from '../shared/habit.service';
+import { HabitService } from '../habits/habit.service';
 import { Subscription } from 'rxjs/Rx';
 
 @Component({

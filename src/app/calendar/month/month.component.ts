@@ -3,8 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { Calendar } from '../calendar';
-import { Habit } from '../../shared/habit';
-import { HabitService } from '../../shared/habit.service';
+import { Habit } from '../../habits/habit';
+import { HabitDetail } from '../../habits/habit-detail';
+import { HabitService } from '../../habits/habit.service';
 
 @Component({
   selector: 'ht-month',
@@ -55,6 +56,28 @@ export class MonthComponent implements OnInit, OnDestroy {
   private refreshCalendar() {
     this.habitService.getHabitData();
     this.habit = this.habitService.getHabitByID(this.id);
+  }
+
+  onDateClick(day: HabitDetail) {
+    let detail: HabitDetail;
+
+    switch (day.status) {
+      case '0':
+        detail.status = 'blank'; // reset to blank
+        break;
+      case '1':
+        detail.status = '0'; // change from true (success) to false (failure)
+        break;
+      default:
+        detail.status = '1';
+        break;
+    }
+
+    // {
+    //   name: string;
+    //   date: Date;
+    //   status: string;
+    // }
   }
 
   onFlipCalendar(changeBy: number) {

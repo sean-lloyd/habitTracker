@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Rx';
 
-import { HabitService } from '../../shared/habit.service';
-import { Habit } from '../../shared/habit';
+import { HabitService } from '../../habits/habit.service';
+import { Habit } from '../../habits/habit';
 
 @Component({
   selector: 'ht-all-week',

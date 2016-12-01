@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { MenuService } from '../shared/menu.service';
-import { HabitService } from '../shared/habit.service';
-import { Habit } from '../shared/habit';
+import { HabitService } from '../habits/habit.service';
+import { Habit } from '../habits/habit';
 
 @Component({
   selector: 'ht-sidebar',

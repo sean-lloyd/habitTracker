@@ -1,39 +1,41 @@
+// ANGULAR 2 MODULES
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-/** Imports for loading & configuring the in-memory web api
- * to simulate a database or api response before the database actually exsts
- * ! REMOVE after database is added
-*/
+// COMPONENTS
+import { AppComponent } from './app.component';
+import { AllWeekComponent } from './calendar/all-week/all-week.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { HeaderComponent } from './header/header.component';
+import { HomeComponent } from './home/home.component';
+import { MonthComponent } from './calendar/month/month.component';
+import { WeekComponent } from './calendar/week/week.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+
+// SERVICES
+import { MenuService } from './shared/menu.service';
+import { HabitService } from './habits/habit.service';
+import { CalendarService } from './calendar/calendar.service';
+
+// ROUTING
+import { routing } from './app.routing';
+
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './api/in-memory-data.service';
 
-import { AppComponent } from './app.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { MonthComponent } from './calendar/month/month.component';
-import { WeekComponent } from './calendar/week/week.component';
-import { HeaderComponent } from './header/header.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { MenuService } from './shared/menu.service';
-import { HabitService } from './shared/habit.service';
-import { CalendarService } from './calendar/calendar.service';
-
-import { routing } from './app.routing';
-import { HomeComponent } from './home/home.component';
-import { AllWeekComponent } from './calendar/all-week/all-week.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CalendarComponent,
-    MonthComponent,
-    WeekComponent,
-    HeaderComponent,
-    SidebarComponent,
-    HomeComponent,
     AllWeekComponent,
+    CalendarComponent,
+    HeaderComponent,
+    HomeComponent,
+    MonthComponent,
+    SidebarComponent,
+    WeekComponent,
   ],
   imports: [
     BrowserModule,

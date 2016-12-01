@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { Calendar } from '../calendar';
-import { Habit } from '../../shared/habit';
-import { HabitService } from '../../shared/habit.service';
+import { Habit } from '../../habits/habit';
+import { HabitService } from '../../habits/habit.service';
 
 @Component({
   selector: 'ht-week',

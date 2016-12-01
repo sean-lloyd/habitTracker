@@ -32,7 +32,7 @@ export class HabitService {
     return body.data || {};
   }
 
-  constructor(private http: Http, private calendarService: CalendarService) { }
+  constructor(private http: Http, private calendarService: CalendarService) {}
 
   // Builds a master compilation of habits, details, and calendars.
   // Can query later without making database calls every time.
@@ -207,6 +207,17 @@ export class HabitService {
       return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
     }
 
+  }
+
+  postHabitDetail(detail: HabitDetail) {
+    /**
+     * Need to figure out the api...or just set up firebase
+     */
+
+    // return this.http
+    //   .put(this.detailsUrl, JSON.stringify(detail))
+    //   .toPromise()
+    //   .then(() => this.fetchData())
   }
 
   private unSubscribe() {

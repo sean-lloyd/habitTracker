@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
@@ -27,6 +27,21 @@ export class WeekComponent implements OnInit, OnDestroy {
       }
     );
 
+  }
+
+  @HostListener('window:keydown', ['$event']) onKeyDown(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    switch (event.keyCode) {
+      case 37: // ArrowLeft
+        this.onFlipCalendar(-1);
+        break;
+      case 39: // ArrowRight
+        this.onFlipCalendar(1);
+        break;
+      default:
+        break;
+    }
   }
 
   ngOnInit() {

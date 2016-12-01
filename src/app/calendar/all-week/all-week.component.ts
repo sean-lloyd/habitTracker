@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Rx';
 
 import { HabitService } from '../../shared/habit.service';
@@ -16,6 +16,21 @@ export class AllWeekComponent implements OnInit, OnDestroy {
   private habitChangedSubscription: Subscription;
 
   constructor(private habitService: HabitService) { }
+
+  @HostListener('window:keydown', ['$event']) onKeyDown(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    switch (event.keyCode) {
+      case 37: // ArrowLeft
+        this.onFlipCalendar(-1);
+        break;
+      case 39: // ArrowRight
+        this.onFlipCalendar(1);
+        break;
+      default:
+        break;
+    }
+  }
 
   ngOnInit() {
     this.habits = this.habitService.getHabitData();

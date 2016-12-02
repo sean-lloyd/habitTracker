@@ -20,17 +20,18 @@
     border-radius: 50%;
     height: 25px;
     width: 25px;
-    padding-top: 2px;
+    padding-top: 1px;
 }
 
 .failure {
-    border: 1px solid pink;
-    background-color: pink;
+    border: 1px solid #DB4C3F;
+    background-color: #DB4C3F;
+    color: white;
 }
 
 .success {
-    border: 1px solid lightgreen;
-    background-color: lightgreen;
+    border: 1px solid #17AA1C;
+    background-color: #17AA1C;
 }
 
 .habit-day-inactive {

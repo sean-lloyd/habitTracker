@@ -1,10 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Subscription } from 'rxjs/Rx';
+// import { Subscription } from 'rxjs/Rx';
 import 'rxjs/Rx'; // needed for .map() method to work on http.get();
+
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 import { Calendar } from '../calendar/calendar';
 import { Habit } from './habit';
+import { HabitCalendar } from './habit-calendar';
 import { HabitDetail } from './habit-detail';
 
 import { CalendarService } from '../calendar/calendar.service';
@@ -15,56 +17,46 @@ export class HabitService {
   private calendarWeek: Calendar;
   currentView: string = 'month';
   currentViewChanged = new EventEmitter<string>();
-  private detailsUrl: string = 'app/details';
-  private fetchHabitSubscription: Subscription;
-  private fetchDetailsSubscription: Subscription;
-  habits: Habit[]; // the main habits array (habits, details, calendar)
-  habitsChanged = new EventEmitter<Habit[]>(); // notifies the main habits array updated
-  private habitList: Habit[]; // from database
-  private habitListChanged = new EventEmitter<Habit[]>(); // when list of habits changes
-  private habitDetails: HabitDetail[]; // from database
-  private habitDetailsChanged = new EventEmitter<any>(); // when habit details changes
-  private habitsUrl: string = 'app/habits';
-  selectedHabit: Habit;
+  habits: HabitCalendar[]; // the main habits array (habits + calendar)
+  private habitsDbCache: Habit[];
+  private habitsDb: FirebaseListObservable<Habit[]>; // the original habits array pulled from database
+  habitsChanged = new EventEmitter<HabitCalendar[]>(); // notifies the main habits array updated
+  selectedHabit: HabitCalendar;
 
-  private extractData(res: Response) {
-    let body = res.json();
-    return body.data || {};
-  }
-
-  constructor(private http: Http, private calendarService: CalendarService) {}
-
-  // Builds a master compilation of habits, details, and calendars.
-  // Can query later without making database calls every time.
-  private buildHabitsCalendars() {
-    this.habits = [];
-    // get calendar data
-    this.calendarMonth = this.calendarService.getCalendarMonth();
-    this.calendarWeek = this.calendarService.getCalendarWeek();
-
-    // merge Habit and HabitDetail and Calendar and push to habits array
-    this.habitList.forEach(
-      (habit) => {
-        let month: Calendar = this.mergeHabitDetailsWithCalendar(this.calendarMonth, habit.name);
-        let week: Calendar = this.mergeHabitDetailsWithCalendar(this.calendarWeek, habit.name);
-
-        // need to copy the Object to avoide closure scope issues
-        habit.month = this.copyObject(month);
-        habit.week = this.copyObject(week);
-
-        this.habits.push(habit);
-      }
-    );
-
-    this.habitsChanged.emit(this.habits);
-
-  }
+  constructor(private calendarService: CalendarService, private af: AngularFire) { }
 
   changeCurrentView(view: string) {
     this.currentView = view;
     this.currentViewChanged.emit(this.currentView);
   }
 
+  // Builds a master compilation of habits, details, and calendars.
+  // Can query later without making database calls every time.
+  private buildHabitsCalendars(habitsDb: any): HabitCalendar[] {
+    let habitsCalendarResult: HabitCalendar[] = [];
+    let habits = this.copyObject(habitsDb);
+
+    // get calendar data
+    this.calendarMonth = this.calendarService.getCalendarMonth();
+    this.calendarWeek = this.calendarService.getCalendarWeek();
+
+    // merge Habit and habitsDb and Calendar and push to habits array
+    habits.forEach(
+      (habit) => {
+        let month: Calendar = this.mergeHabitWithCalendar(this.calendarMonth, habit.log);
+        let week: Calendar = this.mergeHabitWithCalendar(this.calendarWeek, habit.log);
+
+        // need to copy the Object to avoid reference issues
+        habit.month = this.copyObject(month);
+        habit.week = this.copyObject(week);
+
+        habitsCalendarResult.push(habit);
+      }
+    );
+
+    return habitsCalendarResult;
+  }
+  // deep copy objects & arrays to break the reference
   private copyObject(obj: any) {
     /** JSON methods are solution to reference issue
      * JavaScript makes reference when setting a varibale equal to an array
@@ -75,45 +67,16 @@ export class HabitService {
   }
 
   // fetch all data and emit notifications when data arrives and kickoff buildHabitsCalendars()
-  private fetchData(habitName?: string) {
-    // establish observable subscriptions of EventEmitters before initiating the fetching
-    // first fecth Habits, then fetch Details
-    // unsubscribe to avoid memory leaks
-    this.fetchHabitSubscription = this.habitListChanged.subscribe(
-      () => this.fetchDetails()
-    );
-    this.fetchDetailsSubscription = this.habitDetailsChanged.subscribe(
-      () => {
-        this.buildHabitsCalendars();
-        this.unSubscribe();
+  private fetchData() {
+    this.habitsDb = this.af.database.list('/habits');
+    this.habitsDb.subscribe(
+      (data: Habit[]) => {
+        this.habitsDbCache = data;
+        this.habits = [];
+        this.habits = this.buildHabitsCalendars(this.habitsDbCache);
+        this.habitsChanged.emit(this.habits);
       }
     );
-
-    this.fetchHabits();
-  }
-
-  // fetch the habit details from the server
-  private fetchDetails() {
-    this.http.get(this.detailsUrl)
-      .map(this.extractData)
-      .subscribe((data: HabitDetail[]) => {
-        this.habitDetails = data;
-        this.habitDetailsChanged.emit(this.habitDetails);
-      }, error => console.log(error)
-      );
-  }
-
-  // fetch list of habits from database
-  private fetchHabits() {
-    return this.http.get(this.habitsUrl)
-      .map(this.extractData)
-      .subscribe(
-      (data: Habit[]) => {
-        this.habitList = data;
-        this.habitListChanged.emit(this.habits);
-      },
-      error => console.log(error)
-      );
   }
 
   // reacts to flipping the calendar forward/backward by a week or month
@@ -123,8 +86,9 @@ export class HabitService {
     } else if (view === 'week') {
       this.calendarService.flipCalendarWeek(changeBy, view);
     }
-
-    this.buildHabitsCalendars();
+    this.habits = [];
+    this.habits = this.buildHabitsCalendars(this.habitsDbCache);
+    this.habitsChanged.emit(this.habits);
   }
 
   getHabitData() {
@@ -134,26 +98,26 @@ export class HabitService {
     return this.habits;
   }
 
-  getHabitByID(id: string): Habit {
+  getHabitByID(id: any): HabitCalendar {
     if (this.habits) {
-      this.selectedHabit = this.habits[id];
+      this.selectedHabit = this.habits.find(
+        (record) => record.$key === id
+      );
     } else {
       this.fetchData();
     }
     return this.selectedHabit;
   }
 
-  private mergeHabitDetailsWithCalendar(calendar: Calendar, habitName: string): Calendar {
-    let habits = this.copyObject(this.habitDetails);
+  private mergeHabitWithCalendar(cal: Calendar, log: HabitDetail[]): Calendar {
+    let details: HabitDetail[] = this.copyObject(log);
+    let calendar: Calendar = this.copyObject(cal);
     let currentMonth: string = calendar.period.year + calendar.period.month;
 
-    // fix date formate from mySQL database to match calendar format
-    habits.map(
+    details.map(
       (habit) => {
         habit.date = new Date(habit.date);
-        habit.date.setDate(habit.date.getDate() + 1);
         habit.date = makeZeroHour(habit.date);
-        return habit;
       }
     );
 
@@ -167,20 +131,20 @@ export class HabitService {
       let evalMonth = dt.getFullYear() + '' + dt.getMonth();
       let status = '';
 
-      if (evalMonth !== currentMonth) {
+      if (evalMonth !== currentMonth && calendar.days.length > 7) {
         css_class = 'habit-day-inactive';
       } else {
 
-        for (let habit of habits) {
+        for (let detail of details) {
 
-          if (habit.name === habitName && dt.getTime() === habit.date.getTime()) {
-            status = habit.status;
+          if (dt.getTime() === detail.date.getTime()) {
+            status = detail.status;
 
-            switch (habit.status) {
-              case '0':
+            switch (detail.status) {
+              case 'false':
                 css_class = 'failure';
                 break;
-              case '1':
+              case 'true':
                 css_class = 'success';
                 break;
               default:
@@ -191,7 +155,6 @@ export class HabitService {
       }
 
       return {
-        name: habitName,
         date: dt,
         status: status,
         css_class: css_class
@@ -206,23 +169,5 @@ export class HabitService {
 
       return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
     }
-
   }
-
-  postHabitDetail(detail: HabitDetail) {
-    /**
-     * Need to figure out the api...or just set up firebase
-     */
-
-    // return this.http
-    //   .put(this.detailsUrl, JSON.stringify(detail))
-    //   .toPromise()
-    //   .then(() => this.fetchData())
-  }
-
-  private unSubscribe() {
-    if (this.fetchHabitSubscription) { this.fetchHabitSubscription.unsubscribe(); }
-    if (this.fetchDetailsSubscription) { this.fetchDetailsSubscription.unsubscribe(); }
-  }
-
 }

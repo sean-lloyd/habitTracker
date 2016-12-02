@@ -2,11 +2,15 @@
   <ul class="nav nav-pills nav-stacked">
     <li role="presentation"
         [routerLink]="['/all/week']"
-        [ngClass]="{active: allWeekView}"><a href="">All Habits</a></li>
-    <li *ngFor="let habit of habits; let i = index"
+        [ngClass]="{active: allWeekView}"
+        (click)="onClickAll()"><a href="">All Habits</a></li>
+    <li *ngFor="let habit of habits"
         [ngClass]="{active: selectedHabit?.name === habit.name}"
-        [routerLink]="[i + '/' + currentView]"
+        [routerLink]="[habit.$key + '/' + currentView]"
         (click)="onClick(habit)">
         <a href="">{{habit.name}}</a></li>
   </ul>
+
+  <button type="button" class="btn btn-default indent" [routerLink]="['/add']" (click)="onClickAdd()">Add</button>
+
 </div>

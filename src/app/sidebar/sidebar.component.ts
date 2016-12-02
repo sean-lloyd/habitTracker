@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { MenuService } from '../shared/menu.service';
+import { HabitCalendar } from '../habits/habit-calendar';
 import { HabitService } from '../habits/habit.service';
-import { Habit } from '../habits/habit';
 
 @Component({
   selector: 'ht-sidebar',
@@ -19,8 +19,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   allWeekView: boolean = true;
   currentView: string;
   id: string;
-  habits: Habit[] = [];
-  selectedHabit: Habit;
+  habits: HabitCalendar[] = [];
+  selectedHabit: HabitCalendar;
   show: boolean = false;
 
   constructor(
@@ -45,12 +45,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     this.currentViewChangedSubscription = this.habitService.currentViewChanged.subscribe(
       (view: any) => {
-        this.currentView = view;
       }
     );
 
     this.habitChangedSubscription = this.habitService.habitsChanged.subscribe(
-      (habits: Habit[]) => {
+      (habits: HabitCalendar[]) => {
         this.habits = habits;
         this.selectedHabit = this.habitService.selectedHabit;
       }
@@ -64,9 +63,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
     );
   }
 
-  onClick(habit: Habit) {
+  onClick(habit: HabitCalendar) {
     this.selectedHabit = habit;
     this.allWeekView = false;
+  }
+
+  onClickAdd() {
+    this.menuService.toggleSideMenu();
   }
 
   onClickAll() {

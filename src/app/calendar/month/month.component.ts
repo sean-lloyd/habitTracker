@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { Calendar } from '../calendar';
-import { Habit } from '../../habits/habit';
+import { HabitCalendar } from '../../habits/habit-calendar';
 import { HabitDetail } from '../../habits/habit-detail';
 import { HabitService } from '../../habits/habit.service';
 
@@ -17,7 +17,7 @@ export class MonthComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private habitChangeSubscription: Subscription;
   private id: string;
-  habit: Habit;
+  habit: HabitCalendar;
 
   constructor(private habitService: HabitService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.routeSubscription = activatedRoute.params.subscribe(

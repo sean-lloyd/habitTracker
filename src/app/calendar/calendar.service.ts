@@ -27,11 +27,11 @@ export class CalendarService {
 
     switch (view) {
       case 'week':
-        baseDate = new Date(this.calendarWeek.days[0].date);
+        baseDate = new Date(this.calendarWeek.days[0]);
         baseDate.setDate(baseDate.getDate() + (changeBy * 7));
         break;
       case 'month':
-        baseDate = new Date(this.calendarMonth.days[15].date);
+        baseDate = new Date(this.calendarMonth.days[15]);
         baseDate.setMonth(baseDate.getMonth() + changeBy);
         baseDate.setDate(15);
         break;
@@ -105,21 +105,17 @@ export class CalendarService {
       1. first Sunday before base date (weekly view)
       2. first Sunday before month's first day (monthly view)
   */
-  private getStartDate(baseDate?: Date): { week: Date, month: Date } {
+  private getStartDate(baseDate: Date): { week: Date, month: Date } {
     let startDate = {
       week: new Date(),
       month: new Date()
     };
 
-    if (baseDate) {
-      startDate.week = baseDate;
-      startDate.month = baseDate;
-    }
-
-    startDate.week = startDate.month = baseDate || new Date();
+    startDate.week = new Date(baseDate);
     startDate.week.setDate(baseDate.getDate() - baseDate.getDay()); // set to 1st Sunday
     startDate.week = this.makeZeroHour(startDate.week);
 
+    startDate.month = new Date(baseDate);
     startDate.month.setDate(baseDate.getDate() - (baseDate.getDate() - 1)); // set to 1st day of month
     startDate.month.setDate(startDate.month.getDate() - startDate.month.getDay()); // set to 1st Sunday before
     startDate.month = this.makeZeroHour(startDate.month);

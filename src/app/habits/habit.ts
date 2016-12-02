@@ -1,9 +1,8 @@
-import { Calendar } from '../calendar/calendar';
+import { HabitDetail } from './habit-detail';
 
-export interface Habit {
-    name: string;
-    description: string;
-    date_added: string;
-    month: Calendar;
-    week: Calendar;
+export class Habit {
+  name: string;
+  description: string;
+  date_added: string;
+  log: HabitDetail[];
 }

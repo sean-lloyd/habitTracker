@@ -19,8 +19,8 @@ export class InMemoryDataService implements InMemoryDbService {
                 'date_added': '2016-08-29'
             },
             {
-                'name': 'noM',
-                'description': 'because it lowers testosterone',
+                'name': 'walk',
+                'description': 'because it feels good!',
                 'date_added': '2016-08-29'
             }
         ];

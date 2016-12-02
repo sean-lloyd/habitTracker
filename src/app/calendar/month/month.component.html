@@ -1,12 +1,12 @@
 <div class="container">
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8 center">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 center">
         <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(-1)">< </h1>
         <h1 class="month-header">{{habit?.month.title}}</h1>
         <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(1)"> ></h1>
         </div>
-        <div class="col-sm-2">
+        <div class="col-md-2">
         <button type="button" class="btn btn-default pull-right bottom" [routerLink]="['/' + id + '/week']" aria-label="Toggle Calendar View Betweem Month and Week">
                 <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
                 </button>

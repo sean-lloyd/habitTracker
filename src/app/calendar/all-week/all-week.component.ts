@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Rx';
 
 import { HabitService } from '../../habits/habit.service';
-import { Habit } from '../../habits/habit';
+import { HabitCalendar } from '../../habits/habit-calendar';
 
 @Component({
   selector: 'ht-all-week',
@@ -12,7 +12,7 @@ import { Habit } from '../../habits/habit';
 export class AllWeekComponent implements OnInit, OnDestroy {
   currentView: string;
   calendarTitle: string;
-  habits: Habit[] = [];
+  habits: HabitCalendar[] = [];
   private habitChangedSubscription: Subscription;
 
   constructor(private habitService: HabitService) { }
@@ -39,7 +39,7 @@ export class AllWeekComponent implements OnInit, OnDestroy {
     }
 
     this.habitChangedSubscription = this.habitService.habitsChanged.subscribe(
-      (habits: Habit[]) => {
+      (habits: HabitCalendar[]) => {
         this.habits = habits;
         this.calendarTitle = this.habits[0].week.title;
       }

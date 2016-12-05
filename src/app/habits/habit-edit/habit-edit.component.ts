@@ -48,6 +48,9 @@ export class HabitEditComponent implements OnInit, OnDestroy {
   }
 
   private initForm(habit: HabitCalendar) {
+    if (!habit) {
+      habit = new HabitCalendar();
+    }
     this.habitForm = this.formbuilder.group({
       'name': [habit.name, [Validators.required]],
       'description': [habit.description]

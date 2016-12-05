@@ -2,6 +2,11 @@
   display: inline-block;
 }
 
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
 .change-month:hover {
     cursor: pointer;
     color: lightsteelblue;
@@ -26,6 +31,7 @@
 .failure {
     border: 1px solid #DB4C3F;
     background-color: #DB4C3F;
+    color: white;
 }
 
 .success {

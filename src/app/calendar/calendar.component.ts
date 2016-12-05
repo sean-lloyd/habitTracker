@@ -1,28 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HabitService } from '../habits/habit.service';
-import { Subscription } from 'rxjs/Rx';
+import { Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'ht-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit, OnDestroy {
-  currentView: string;
-  currentViewSubscription: Subscription;
+export class CalendarComponent implements OnInit {
 
-  constructor(private habitservice: HabitService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.currentView = this.habitservice.currentView;
 
-    this.currentViewSubscription = this.habitservice.currentViewChanged.subscribe(
-      (view: any) => this.currentView = view
-    );
   }
-
-  ngOnDestroy() {
-    if (this.currentViewSubscription) { this.currentViewSubscription.unsubscribe(); }
-  }
-
 }

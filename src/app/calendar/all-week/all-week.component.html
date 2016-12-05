@@ -23,7 +23,7 @@
                 <th class="center">SAT</th>
             </tr>
             <tr>
-                <td class="center habit-day" *ngFor="let day of habit?.week.days"><span [ngClass]="day.css_class">{{day.date | date:'d'}}</span></td>
+                <td class="center habit-day" *ngFor="let day of habit?.week.days"><span [ngClass]="day.css_class" (click)="onDateClick(habit.$key, day)">{{day.date | date:'d'}}</span></td>
             </tr>
         </table>
     </div>

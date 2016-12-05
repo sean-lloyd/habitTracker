@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/Rx';
 
 import { HabitService } from '../../habits/habit.service';
 import { HabitCalendar } from '../../habits/habit-calendar';
+import { HabitDetail } from '../../habits/habit-detail';
 
 @Component({
   selector: 'ht-all-week',
@@ -44,6 +45,23 @@ export class AllWeekComponent implements OnInit, OnDestroy {
         this.calendarTitle = this.habits[0].week.title;
       }
     );
+  }
+
+  onDateClick(habitId, detail: HabitDetail) {
+
+    switch (detail.status) {
+      case 'false':
+        detail.status = 'blank'; // reset to blank
+        break;
+      case 'true':
+        detail.status = 'false'; // change from true (success) to false (failure)
+        break;
+      default:
+        detail.status = 'true';
+        break;
+    }
+
+    this.habitService.logDay(habitId, detail);
   }
 
   onFlipCalendar(changeBy: number) {

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Rx';
 
 import { Calendar } from '../calendar';
 import { HabitCalendar } from '../../habits/habit-calendar';
+import { HabitDetail } from '../../habits/habit-detail';
 import { HabitService } from '../../habits/habit.service';
 
 @Component({
@@ -51,6 +52,28 @@ export class WeekComponent implements OnInit, OnDestroy {
       () => this.refreshCalendar()
     );
 
+  }
+
+  onDateClick(habitId, detail: HabitDetail) {
+
+    switch (detail.status) {
+      case 'false':
+        detail.status = 'blank'; // reset to blank
+        break;
+      case 'true':
+        detail.status = 'false'; // change from true (success) to false (failure)
+        break;
+      default:
+        detail.status = 'true';
+        break;
+    }
+
+    this.habitService.logDay(habitId, detail);
+  }
+
+  onEditClick() {
+    this.habitService.add = false;
+    this.habitService.edit = true;
   }
 
   private refreshCalendar() {

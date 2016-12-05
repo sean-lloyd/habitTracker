@@ -3,21 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { HabitAddComponent } from './habit-add.component';
+import { HabitEditComponent } from './habit-edit.component';
 
-describe('HabitAddComponent', () => {
-  let component: HabitAddComponent;
-  let fixture: ComponentFixture<HabitAddComponent>;
+describe('HabitEditComponent', () => {
+  let component: HabitEditComponent;
+  let fixture: ComponentFixture<HabitEditComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HabitAddComponent ]
+      declarations: [ HabitEditComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HabitAddComponent);
+    fixture = TestBed.createComponent(HabitEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

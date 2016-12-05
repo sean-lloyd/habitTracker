@@ -2,6 +2,11 @@
   display: inline-block;
 }
 
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
 .change-month:hover {
     cursor: pointer;
     color: lightsteelblue;
@@ -9,9 +14,6 @@
 
 .habit-day span:hover:not(.habit-day-inactive) {
     cursor: pointer;
-    /*background-color: lightsteelblue;*/
-    /*transition: all 0.1s ease-in-out;*/
-    /*-webkit-transition: all 0.1s ease-in-out;*/
 }
 
 .habit-day span {

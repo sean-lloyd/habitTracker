@@ -4,13 +4,15 @@
         [routerLink]="['/all/week']"
         [ngClass]="{active: allWeekView}"
         (click)="onClickAll()"><a href="">All Habits</a></li>
-    <li *ngFor="let habit of habits"
-        [ngClass]="{active: selectedHabit?.name === habit.name}"
-        [routerLink]="[habit.$key + '/' + currentView]"
-        (click)="onClick(habit)">
-        <a href="">{{habit.name}}</a></li>
-  </ul>
 
+    <li *ngFor="let habit of habits"
+          [ngClass]="{active: selectedHabit?.name === habit.name}"
+          [routerLink]="[habit.$key + '/' + currentView]"
+          (click)="onClick(habit)">
+          <a href="">{{habit.name}}</a>
+    </li>
+  </ul>
+  <br>
   <button type="button" class="btn btn-default indent" [routerLink]="['/add']" (click)="onClickAdd()">Add</button>
 
 </div>

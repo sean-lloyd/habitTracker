@@ -53,31 +53,31 @@ export class MonthComponent implements OnInit, OnDestroy {
 
   }
 
-  private refreshCalendar() {
-    this.habitService.getHabitData();
-    this.habit = this.habitService.getHabitByID(this.id);
-  }
+  onDateClick(habitId, detail: HabitDetail) {
 
-  onDateClick(day: HabitDetail) {
-    let detail: HabitDetail;
-
-    switch (day.status) {
-      case '0':
+    switch (detail.status) {
+      case 'false':
         detail.status = 'blank'; // reset to blank
         break;
-      case '1':
-        detail.status = '0'; // change from true (success) to false (failure)
+      case 'true':
+        detail.status = 'false'; // change from true (success) to false (failure)
         break;
       default:
-        detail.status = '1';
+        detail.status = 'true';
         break;
     }
 
-    // {
-    //   name: string;
-    //   date: Date;
-    //   status: string;
-    // }
+    this.habitService.logDay(habitId, detail);
+  }
+
+  onEditClick() {
+    this.habitService.add = false;
+    this.habitService.edit = true;
+  }
+
+  private refreshCalendar() {
+    this.habitService.getHabitData();
+    this.habit = this.habitService.getHabitByID(this.id);
   }
 
   onFlipCalendar(changeBy: number) {

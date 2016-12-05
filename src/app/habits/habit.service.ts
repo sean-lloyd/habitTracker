@@ -1,29 +1,78 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { Http } from '@angular/http';
 // import { Subscription } from 'rxjs/Rx';
 import 'rxjs/Rx'; // needed for .map() method to work on http.get();
 
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 import { Calendar } from '../calendar/calendar';
 import { Habit } from './habit';
 import { HabitCalendar } from './habit-calendar';
 import { HabitDetail } from './habit-detail';
+import { HabitNew } from './habit-new';
 
 import { CalendarService } from '../calendar/calendar.service';
 
 @Injectable()
 export class HabitService {
+  add: boolean = false; // for edit-component to determine which mode
+  edit: boolean = false; // for edit-component to determine which mode
   private calendarMonth: Calendar;
   private calendarWeek: Calendar;
   currentView: string = 'month';
   currentViewChanged = new EventEmitter<string>();
-  habits: HabitCalendar[]; // the main habits array (habits + calendar)
+  private habits: HabitCalendar[]; // the main habits array (habits + calendar)
   private habitsDbCache: Habit[];
   private habitsDb: FirebaseListObservable<Habit[]>; // the original habits array pulled from database
   habitsChanged = new EventEmitter<HabitCalendar[]>(); // notifies the main habits array updated
   selectedHabit: HabitCalendar;
 
-  constructor(private calendarService: CalendarService, private af: AngularFire) { }
+  constructor(private calendarService: CalendarService, private af: AngularFire, private http: Http) { }
+
+  addHabit(habit: HabitNew) {
+    let path = `/habits/${habit.name.split(' ').join('-')}`;
+    let habitList: FirebaseObjectObservable<HabitDetail[]> = this.af.database.object(path);
+    let date = new Date;
+    habit.date_added = this.makeZeroHour(date).toISOString();
+
+    habitList.set(habit);
+  }
+
+  clearLogHistory(habitId: string) {
+    let path = `/habits/${habitId}/log`;
+    let log: FirebaseObjectObservable<Habit> = this.af.database.object(path);
+    log.remove();
+  }
+
+  deleteHabit(habitId: string) {
+    let path = `/habits/${habitId}`;
+    let habit: FirebaseObjectObservable<Habit> = this.af.database.object(path);
+    habit.remove();
+  }
+
+  editHabit(oldHabit: HabitCalendar, newHabit: HabitNew) {
+    let oldPath = `/habits/${oldHabit.$key}`;
+    let newPath = `/habits/${newHabit.name.split(' ').join('-')}`;
+    let habit: FirebaseObjectObservable<Habit> = this.af.database.object(oldPath);
+    let habitNew: FirebaseObjectObservable<Habit> = this.af.database.object(newPath);
+
+    if (oldHabit.name === newHabit.name) {
+      // update exsting habit
+      habit.update({
+        name: newHabit.name,
+        description: newHabit.description
+      });
+    } else {
+      oldHabit.name = newHabit.name;
+      oldHabit.description = newHabit.description;
+      delete oldHabit.$key;
+      delete oldHabit.month;
+      delete oldHabit.week;
+      // remove old the old habit/name/key with the new habit (retaining old data);
+      habit.remove();
+      habitNew.set(oldHabit);
+    }
+  }
 
   changeCurrentView(view: string) {
     this.currentView = view;
@@ -56,6 +105,7 @@ export class HabitService {
 
     return habitsCalendarResult;
   }
+
   // deep copy objects & arrays to break the reference
   private copyObject(obj: any) {
     /** JSON methods are solution to reference issue
@@ -106,18 +156,48 @@ export class HabitService {
     } else {
       this.fetchData();
     }
+
     return this.selectedHabit;
   }
 
+  logDay(habitId: string, day) {
+    let date: string = new Date(day.date).toISOString();
+    let logId: string = date.slice(0, 10);
+    let logEntry: HabitDetail = {
+      date: date,
+      status: day.status
+    };
+    // Firebase declarations
+    let path = `/habits/${habitId}/log/${logId}`;
+    let logDbObj: FirebaseObjectObservable<HabitDetail>;
+    logDbObj = this.af.database.object(path);
+
+    if (day.status === 'blank') {
+      logDbObj.remove();
+    } else {
+      logDbObj.update(logEntry);
+    }
+
+  }
+
+  // zeroes out time in date to make it easier to matches dates later. The times does not matter in this app.
+  private makeZeroHour(date: Date): Date {
+    let year = date.getFullYear();
+    let month = date.getMonth();
+    let day = date.getDate();
+
+    return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+  }
+
   private mergeHabitWithCalendar(cal: Calendar, log: HabitDetail[]): Calendar {
-    let details: HabitDetail[] = this.copyObject(log);
+    let details: HabitDetail[] = this.objectToArray(log);
     let calendar: Calendar = this.copyObject(cal);
     let currentMonth: string = calendar.period.year + calendar.period.month;
 
     details.map(
       (habit) => {
         habit.date = new Date(habit.date);
-        habit.date = makeZeroHour(habit.date);
+        habit.date = this.makeZeroHour(habit.date);
       }
     );
 
@@ -161,13 +241,13 @@ export class HabitService {
       };
     }
 
-    // zeroes out time in date to make it easier to matches dates later. The times does not matter in this app.
-    function makeZeroHour(date: Date): Date {
-      let year = date.getFullYear();
-      let month = date.getMonth();
-      let day = date.getDate();
+  }
 
-      return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+  private objectToArray(obj: any) {
+    if (obj) {
+      return Object.keys(obj).map((k) => obj[k]);
+    } else {
+      return [];
     }
   }
 }

@@ -15,7 +15,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private menuServiceSubscription: Subscription;
   private habitChangedSubscription: Subscription;
-  private currentViewChangedSubscription: Subscription;
   allWeekView: boolean = true;
   currentView: string;
   id: string;
@@ -43,11 +42,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.show = this.menuService.showSideMenu;
     this.habits = this.habitService.getHabitData();
 
-    this.currentViewChangedSubscription = this.habitService.currentViewChanged.subscribe(
-      (view: any) => {
-      }
-    );
-
     this.habitChangedSubscription = this.habitService.habitsChanged.subscribe(
       (habits: HabitCalendar[]) => {
         this.habits = habits;
@@ -64,15 +58,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   onClick(habit: HabitCalendar) {
+    this.menuService.toggleSideMenu();
     this.selectedHabit = habit;
     this.allWeekView = false;
   }
 
   onClickAdd() {
     this.menuService.toggleSideMenu();
+    this.habitService.add = true;
+    this.habitService.edit = false;
   }
 
   onClickAll() {
+    this.menuService.toggleSideMenu();
     this.selectedHabit = null;
     this.allWeekView = true;
   }

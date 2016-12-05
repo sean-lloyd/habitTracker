@@ -1,14 +1,14 @@
 // ANGULAR 2 MODULES
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
 import { AllWeekComponent } from './calendar/all-week/all-week.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { HabitAddComponent } from './habits/habit-add/habit-add.component';
+import { HabitEditComponent } from './habits/habit-edit/habit-edit.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { MonthComponent } from './calendar/month/month.component';
@@ -42,7 +42,7 @@ export const firebaseConfig = {
     AppComponent,
     AllWeekComponent,
     CalendarComponent,
-    HabitAddComponent,
+    HabitEditComponent,
     HeaderComponent,
     HomeComponent,
     MonthComponent,
@@ -52,6 +52,7 @@ export const firebaseConfig = {
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     InMemoryWebApiModule.forRoot(InMemoryDataService), // to trick the HTTP client into fetching and saving data from a mock service
     AngularFireModule.initializeApp(firebaseConfig),

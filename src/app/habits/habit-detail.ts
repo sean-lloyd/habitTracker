@@ -1,5 +1,5 @@
 export interface HabitDetail {
-    date: Date;
+    date: any;
     status: string;
     css_class?: string;
 }

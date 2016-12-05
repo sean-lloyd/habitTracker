@@ -3,9 +3,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
-import { HabitCalendar } from '../habit-calendar';
+import { HabitNew, HabitCalendar } from '../habit';
 import { HabitService } from '../habit.service';
-import { HabitNew } from '../habit-new';
 
 @Component({
   selector: 'ht-habit-add',

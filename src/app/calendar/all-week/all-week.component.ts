@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Rx';
 
 import { HabitService } from '../../habits/habit.service';
-import { HabitCalendar } from '../../habits/habit-calendar';
-import { HabitDetail } from '../../habits/habit-detail';
+import { HabitDetail, HabitCalendar } from '../../habits/habit';
 
 @Component({
   selector: 'ht-all-week',

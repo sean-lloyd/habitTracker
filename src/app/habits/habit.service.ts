@@ -6,10 +6,7 @@ import 'rxjs/Rx'; // needed for .map() method to work on http.get();
 import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 
 import { Calendar } from '../calendar/calendar';
-import { Habit } from './habit';
-import { HabitCalendar } from './habit-calendar';
-import { HabitDetail } from './habit-detail';
-import { HabitNew } from './habit-new';
+import { Habit, HabitDetail, HabitNew, HabitCalendar } from './habit';
 
 import { CalendarService } from '../calendar/calendar.service';
 

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
 import { MenuService } from '../shared/menu.service';
-import { HabitCalendar } from '../habits/habit-calendar';
+import { HabitCalendar } from '../habits/habit';
 import { HabitService } from '../habits/habit.service';
 
 @Component({

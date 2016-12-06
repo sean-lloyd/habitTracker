@@ -9,7 +9,7 @@ import { HabitDetailsComponent } from './habits/habit-details/habit-details.comp
 import { HabitEditComponent } from './habits/habit-edit/habit-edit.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'all/week', pathMatch: 'full' },
+    { path: '', component: HomeComponent, pathMatch: 'full' },
     { path: 'add', component: HabitEditComponent, pathMatch: 'full' },
     { path: 'all/week', component: AllWeekComponent, pathMatch: 'full'},
     { path: ':id', component: CalendarComponent, pathMatch: 'full'},

@@ -7,7 +7,7 @@
             <h1 class="month-header change-month" style="white-space: pre" (click)="onFlipCalendar(1)"> ></h1>
         </div>
         <div class="col-md-2 btn-toolbar pull-right">
-            <button type="button" title="Week View" class="btn btn-default btn-sm btn-group" [routerLink]="['/' + id + '/month']" aria-label="Go to Calendar View">
+            <button type="button" title="Week View" class="btn btn-default btn-sm btn-group" [routerLink]="['/' + id + '/week']" aria-label="Go to Calendar View">
                     <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
             </button>
             <button type="button" title="Edit" class="btn btn-default btn-sm btn-group" [routerLink]="['/' + id + '/edit']" (click)="onEditClick()" aria-label="Edit Habit">

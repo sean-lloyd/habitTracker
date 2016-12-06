@@ -1,0 +1,12 @@
+.proclaim {
+    background: url(../assets/img/path.jpg) center no-repeat no-repeat;
+    background-size: cover;
+    margin-top: -25px;
+	text-align: center;
+    min-height: 100%;
+    height: 100%;
+}
+
+.jumbotron {
+    background: none;
+}

@@ -138,6 +138,20 @@ export class HabitService {
     this.habitsChanged.emit(this.habits);
   }
 
+  getHabitDbCacheById(id: string): Habit {
+    let habit: Habit;
+
+    if (this.habitsDbCache) {
+      habit = this.habitsDbCache.find(
+        record => record.$key === id
+      );
+    } else {
+      this.fetchData();
+    }
+
+    return habit;
+  }
+
   getHabitData() {
     if (!this.habits) {
       this.fetchData();
@@ -155,6 +169,10 @@ export class HabitService {
     }
 
     return this.selectedHabit;
+  }
+
+  getHabitIdList(): Array<any> {
+    return this.habitsDbCache.map(habit => habit.name);
   }
 
   logDay(habitId: string, day) {

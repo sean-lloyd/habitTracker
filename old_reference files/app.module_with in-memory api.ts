@@ -23,9 +23,12 @@ import { CalendarService } from './calendar/calendar.service';
 // ROUTING
 import { routing } from './app.routing';
 
+// INTERNAL TEMP DATABASE API
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService }  from './api/in-memory-data.service';
+
 // FIREBASE
 import { AngularFireModule } from 'angularfire2';
-import { HabitDetailsComponent } from './habits/habit-details/habit-details.component';
 export const firebaseConfig = {
     apiKey: 'AIzaSyBCl_h1o2bBZ7-24FZ8PtG3edbbUGxAS2s',
     authDomain: 'habit-tracker-d4cd6.firebaseapp.com',
@@ -45,13 +48,13 @@ export const firebaseConfig = {
     MonthComponent,
     SidebarComponent,
     WeekComponent,
-    HabitDetailsComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    InMemoryWebApiModule.forRoot(InMemoryDataService), // to trick the HTTP client into fetching and saving data from a mock service
     AngularFireModule.initializeApp(firebaseConfig),
     routing
   ],

@@ -15,6 +15,7 @@ export class HabitEditComponent implements OnInit, OnDestroy {
   add: boolean;
   edit: boolean;
   habitForm: FormGroup;
+  habitList: Array<any>;
   private id: string;
   private routeSubscription: Subscription;
 
@@ -35,6 +36,7 @@ export class HabitEditComponent implements OnInit, OnDestroy {
           this.habitService.add = true;
           this.habitService.edit = false;
         }
+        this.habitList = habitService.getHabitIdList();
 
         this.initForm(habit);
       }
@@ -51,10 +53,27 @@ export class HabitEditComponent implements OnInit, OnDestroy {
       habit = new HabitCalendar();
     }
     this.habitForm = this.formbuilder.group({
-      'name': [habit.name, [Validators.required]],
+      'name': [habit.name, [
+        Validators.required,
+        Validators.pattern('[A-Za-z0-9 -]*$'),
+        // this.duplicateValidator
+      ]],
       'description': [habit.description]
     });
   }
+
+  // !TODO Cannot get this to work. Angular issues an error that the habitList is not defined.
+  // However, the list is set before initForm, so it should be defined when this validator is called
+  // private duplicateValidator(control: FormControl): { [s: string]: boolean } {
+  //   console.log('duplicateValidator...');
+  //   // if no error: return NULL
+  //   // do not return FALSE
+
+  //   if (this.habitList.find(control.value)) {
+  //     return { duplcate: true };
+  //   }
+  //   return null;
+  // }
 
   onAdd() {
     let habit: HabitNew = {

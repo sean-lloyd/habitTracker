@@ -9,6 +9,13 @@
           <div class="form-group">
             <label for="name">name</label>
             <input type="text" id="name" class="form-control" formControlName="name">
+            <br>
+            <div class="alert alert-danger" role="alert" *ngIf="!habitForm.get('name').valid && habitForm.get('name').touched">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              <span *ngIf="habitForm.controls['name'].hasError('pattern')">invalid name. letters, numbers, spaces, and dashes only. no special characters or emojis. :)</span>
+              <span *ngIf="habitForm.controls['name'].hasError('duplicate')">this habit already exists. try another one.</span>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -22,11 +29,10 @@
         <button type="button" class="btn btn-primary" (click)="onAdd()" *ngIf="add" [disabled]="!habitForm.valid">add</button>
         <button type="button" class="btn btn-primary" (click)="onSave()" *ngIf="edit" [disabled]="!habitForm.valid">save</button>
         <button type="button" class="btn btn-primary" (click)="onDelete()" *ngIf="edit">delete</button>
-        <button type="button" class="btn btn-primary btn-warn" (click)="onClearHistory()" *ngIf="edit" >clear history</button>
+        <button type="button" class="btn btn-warning" (click)="onClearHistory()" *ngIf="edit" >clear history</button>
+        <button type="button" class="btn btn-primary" [routerLink]="['/' + id + '/month']">cancel</button>
       </div>
     </div>
   </div>
-
-
 
 </div>

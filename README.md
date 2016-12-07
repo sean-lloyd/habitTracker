@@ -1,5 +1,5 @@
 # HabitTracker
-My first Angular 2 app. A calendar-based approach to tracking succes/failure when establishing a new habit.
+My first Angular 2 app. A calendar-based approach to tracking succes/failure when establishing a new habit. You can find a live running version [here](http://seanlloyd.org/habit-tracker/).
 
 ## Angular 2 Notes
 The app uses the following Angular 2 features:

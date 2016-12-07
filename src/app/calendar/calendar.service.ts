@@ -75,12 +75,12 @@ export class CalendarService {
     // get days in week calendar
     calendarWeek.days = this.getCalendarDays(startDate.week, 1);
     calendarWeek.period = this.mostlyMonth(calendarWeek.days);
-    calendarWeek.title = this.listMonths[calendarWeek.period.month] + ' ' + calendarWeek.period.year; // 'September 2016'
+    calendarWeek.title = new Date(+calendarWeek.period.year, +calendarWeek.period.month, 1, 0, 0, 0, 0).toISOString();
 
     // get days in month calendar
     calendarMonth.days = this.getCalendarDays(startDate.month, 6);
     calendarMonth.period = this.mostlyMonth(calendarMonth.days);
-    calendarMonth.title = this.listMonths[calendarMonth.period.month] + ' ' + calendarMonth.period.year;
+    calendarMonth.title = new Date(+calendarMonth.period.year, +calendarMonth.period.month, 1, 0, 0, 0, 0).toISOString();
 
     this.calendarWeek = calendarWeek;
     this.calendarMonth = calendarMonth;

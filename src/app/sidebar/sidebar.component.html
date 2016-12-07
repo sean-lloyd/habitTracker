@@ -3,7 +3,7 @@
     <li role="presentation"
         [routerLink]="['/all/week']"
         [ngClass]="{active: allWeekView}"
-        (click)="onClickAll()"><a href="">All Habits</a></li>
+        (click)="onClickAll()"><a class="top" href="">All Habits</a></li>
 
     <li *ngFor="let habit of habits"
           [ngClass]="{active: selectedHabit?.name === habit.name}"

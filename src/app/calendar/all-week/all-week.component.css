@@ -7,6 +7,11 @@
     color: lightsteelblue;
 }
 
+.narrow {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
 .habit-day span:hover:not(.habit-day-inactive) {
     cursor: pointer;
     /*background-color: lightsteelblue;*/

@@ -25,6 +25,10 @@ li.button {
     display: inline-block;
 }
 
+.nav-pills>li>a.top {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
 
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}

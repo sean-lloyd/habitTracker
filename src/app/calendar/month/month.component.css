@@ -7,6 +7,11 @@
     align-items: center;
 }
 
+.narrow {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
 .change-month:hover {
     cursor: pointer;
     color: lightsteelblue;

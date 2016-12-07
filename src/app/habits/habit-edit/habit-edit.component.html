@@ -27,11 +27,11 @@
           </div>
         </form>
         <div class="row">
-          <button type="button" class="btn btn-primary" (click)="onAdd()" *ngIf="add" [disabled]="!habitForm.valid">add</button>
-          <button type="button" class="btn btn-primary" (click)="onSave()" *ngIf="edit" [disabled]="!habitForm.valid">save</button>
-          <button type="button" class="btn btn-primary" (click)="onDelete()" *ngIf="edit">delete</button>
-          <button type="button" class="btn btn-warning" (click)="onClearHistory()" *ngIf="edit" >clear history</button>
-          <button type="button" class="btn btn-primary" [routerLink]="['/' + id + '/month']">cancel</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="onAdd()" *ngIf="add" [disabled]="!habitForm.valid">add</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="onSave()" *ngIf="edit" [disabled]="!habitForm.valid">save</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="onDelete()" *ngIf="edit">delete</button>
+          <button type="button" class="btn btn-sm btn-warning" (click)="onClearHistory()" *ngIf="edit" >clear history</button>
+          <button type="button" class="btn btn-sm btn-primary" [routerLink]="['/all/week']">cancel</button>
         </div>
       </div>
     </div>

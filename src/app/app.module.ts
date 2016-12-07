@@ -8,6 +8,7 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AllWeekComponent } from './calendar/all-week/all-week.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { HabitDetailsComponent } from './habits/habit-details/habit-details.component';
 import { HabitEditComponent } from './habits/habit-edit/habit-edit.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
@@ -25,13 +26,12 @@ import { routing } from './app.routing';
 
 // FIREBASE
 import { AngularFireModule } from 'angularfire2';
-import { HabitDetailsComponent } from './habits/habit-details/habit-details.component';
 export const firebaseConfig = {
-    apiKey: 'AIzaSyBCl_h1o2bBZ7-24FZ8PtG3edbbUGxAS2s',
-    authDomain: 'habit-tracker-d4cd6.firebaseapp.com',
-    databaseURL: 'https://habit-tracker-d4cd6.firebaseio.com',
-    storageBucket: 'habit-tracker-d4cd6.appspot.com',
-    messagingSenderId: '613417752987'
+    apiKey: 'your apiKey',
+    authDomain: 'your authDomain',
+    databaseURL: 'your databaseURL',
+    storageBucket: 'your storageBucket',
+    messagingSenderId: 'your messagingSenderId'
 };
 
 @NgModule({

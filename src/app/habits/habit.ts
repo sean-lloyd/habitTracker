@@ -9,7 +9,7 @@ export class Habit {
 }
 
 export interface HabitDetail {
-    date: any;
+    date: string;
     status: string;
     css_class?: string;
 }

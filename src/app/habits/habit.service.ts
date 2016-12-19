@@ -29,8 +29,8 @@ export class HabitService {
   addHabit(habit: HabitNew) {
     let path = `/habits/${habit.name.split(' ').join('-')}`;
     let habitList: FirebaseObjectObservable<HabitDetail[]> = this.af.database.object(path);
-    let date = new Date;
-    habit.date_added = this.makeZeroHour(date).toISOString();
+    let date = new Date().toISOString();
+    habit.date_added = this.makeZeroHour(date);
 
     habitList.set(habit);
   }
@@ -196,12 +196,14 @@ export class HabitService {
   }
 
   // zeroes out time in date to make it easier to matches dates later. The times does not matter in this app.
-  private makeZeroHour(date: Date): Date {
-    let year = date.getFullYear();
-    let month = date.getMonth();
-    let day = date.getDate();
+  private makeZeroHour(date: string): string {
+    let dateObj = new Date(date);
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth();
+    let day = dateObj.getDate();
+    let newDate = new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
 
-    return new Date(year, month, day, 0, 0, 0, 0); // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+    return newDate.toISOString();
   }
 
   private mergeHabitWithCalendar(cal: Calendar, log: HabitDetail[]): Calendar {
@@ -211,7 +213,8 @@ export class HabitService {
 
     details.map(
       (habit) => {
-        habit.date = new Date(habit.date);
+        let dateObj = new Date(habit.date);
+        habit.date = dateObj.toISOString();
         habit.date = this.makeZeroHour(habit.date);
       }
     );
@@ -232,7 +235,7 @@ export class HabitService {
 
         for (let detail of details) {
 
-          if (dt.getTime() === detail.date.getTime()) {
+          if (dt.getTime() === new Date(detail.date).getTime()) {
             status = detail.status;
 
             switch (detail.status) {

@@ -17,11 +17,11 @@ Other libraries use:
 
 ## Still To Do
 * Write tests. The testing (.spec) files are currently empty shells
-* Habit-Edit Form: Async validation if habit name already exists. Ran into issues before with FormControl not having access to component's `this` object.
+* Habit-Edit Form: Async validation if habit name already exists. Ran into issues before with FormControl not having access to component's `this` object. (Try .bind(this) or let self = this)
 * Habit-Edit: Resolve undefined errors if you go directly to add route
 * Improve performance. Currently loads slow on mobile devices.
 * Improve comments
-* Make sure typings always used
+* Habit-Edit: On cancel, go back to previous location. See ng2 [Location service](https://angular.io/docs/ts/latest/api/common/index/Location-class.html#!#back-anchor)...location.back()
 
 ## Refactor Opportunities
 * Combine common code, html, css into from child components into main CalendarComponent. I initially avoided this to play around with multiple components and services.

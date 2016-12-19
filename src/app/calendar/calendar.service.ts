@@ -5,8 +5,6 @@ import { Calendar } from './calendar';
 export class CalendarService {
   public calendarMonth: Calendar;
   public calendarWeek: Calendar;
-  private listMonths: Array<string> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December'];
 
   constructor() { }
 
@@ -87,15 +85,15 @@ export class CalendarService {
   }
 
   // creates an array with the calendar dates
-  private getCalendarDays(startDate: Date, numWeeks: number): Date[] {
-    let a: Date[] = [];
+  private getCalendarDays(startDate: Date, numWeeks: number): string[] {
+    let a: string[] = [];
     let date: Date;
     let numDays: number = numWeeks * 7;
 
     for (let i = 0; i < numDays; i++) {
       date = new Date(startDate);
       date.setDate(date.getDate() + i);
-      a.push(date);
+      a.push(date.toISOString());
     }
 
     return a;
@@ -133,7 +131,7 @@ export class CalendarService {
   }
 
   // takes in an array and returns an array of objects with the predominant month & year (YYYY-M)
-  private mostlyMonth(array: Date[]): { month: string, year: string } {
+  private mostlyMonth(array: string[]): { month: string, year: string } {
     let periods: Array<any>;
     let period: string;
     let result: { month: string, year: string } = {
@@ -142,7 +140,10 @@ export class CalendarService {
     };
 
     // create new array of months YYYY-MM
-    periods = array.map(date => date.getFullYear() + '-' + date.getMonth());
+    periods = array.map(date => {
+      let dateObj: Date = new Date(date);
+      return dateObj.getFullYear() + '-' + dateObj.getMonth();
+    });
 
     // sort the array by the number of occurrences of each month (least to most)
     periods.sort(function (a, b) {
